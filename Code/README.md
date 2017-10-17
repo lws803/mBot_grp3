@@ -2,5 +2,5 @@
 
 Time to find some efficient maze solving algos
 
-# Resources we could use 
+# Simulator we could use
 http://gazebosim.org/
