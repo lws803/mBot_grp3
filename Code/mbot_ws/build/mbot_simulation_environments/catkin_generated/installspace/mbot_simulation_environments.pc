@@ -1,0 +1,8 @@
+prefix=/home/wilson/mbot_ws/install
+
+Name: mbot_simulation_environments
+Description: Description of mbot_simulation_environments
+Version: 0.0.1
+Cflags: 
+Libs: -L/home/wilson/mbot_ws/install/lib 
+Requires: 

@@ -1,0 +1,2 @@
+beginner_tutorials:mbot_simulation_environments
+-DCATKIN_DEVEL_PREFIX=/home/wilson/mbot_ws/devel -DCMAKE_INSTALL_PREFIX=/home/wilson/mbot_ws/install -G Unix Makefiles
