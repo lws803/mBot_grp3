@@ -13,3 +13,9 @@ https://github.com/socrob/mbot_simulation_environments - simulation environment 
 https://www.youtube.com/watch?v=X5E5nB3Rk44 - virtual universe pro mbot simulation 
 
 http://jderobot.org/index.php/Manual-5#Installing_JdeRobot_5 - JDE robot
+
+# PID Sources and references 
+https://playground.arduino.cc/Code/PIDLibaryBasicExample
+
+
+https://playground.arduino.cc/Code/PIDLibrary
