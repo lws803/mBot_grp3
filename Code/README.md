@@ -19,3 +19,6 @@ https://playground.arduino.cc/Code/PIDLibaryBasicExample
 
 
 https://playground.arduino.cc/Code/PIDLibrary
+
+
+https://create.arduino.cc/projecthub/mjrobot/line-follower-robot-pid-control-android-setup-e5113a - line follower bot using PID. Can be applied to IR sensors as well 
