@@ -6,7 +6,7 @@ int ledPin = 13;
 
 
 //Specify the links and initial tuning parameters
-PID myPID(&Input, &Output, &Setpoint,1,0,0, DIRECT);
+PID myPID(&Input, &Output, &Setpoint,1,5,0, DIRECT);
 /*
  * Some observations: 
  * Setting Kd to 0 makes response in adjustment slower (LED slowly dims)
@@ -17,7 +17,7 @@ void setup()
 {
   //initialize the variables we're linked to
   Input = analogRead(0);
-  Setpoint = 100; // LED will turn on whenever LDR falls below 100
+  Setpoint = 600; // LED will turn on whenever LDR falls below 100
 
   //turn the PID on
   myPID.SetMode(AUTOMATIC);
@@ -31,12 +31,14 @@ void loop()
   int output_int = Output;
   myPID.Compute();
   analogWrite(ledPin, Output);
-  analogWrite(3,Output);
+  analogWrite(11,Output);
   if (output_int > 0) {
     Serial.print ("Input: ");
     Serial.println(input_int);
     Serial.print ("Output: ");
     Serial.println (output_int);
+  }else {
+    Serial.println(Input);
   }
   delay (100);
 }
