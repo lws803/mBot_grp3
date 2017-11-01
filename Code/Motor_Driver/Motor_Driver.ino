@@ -47,8 +47,8 @@ void right() {
 void setup()
 {
   // PID controls
-  Setpoint = 550; // LED will turn on whenever LDR falls below 100
-  Setpoint2 = 550;
+  Setpoint = 800; // Above this value it will set output to 0, need to account for default resistance of circuit 
+  Setpoint2 = 800;
   // Turn the PID on
   myPID.SetMode(AUTOMATIC);
   myPID2.SetMode(AUTOMATIC);
@@ -58,31 +58,41 @@ void setup()
 void loop()
 {
   // PID controls
-  Input = analogRead(0); // Left
-  Input2 = analogRead(1); // Right
+  Input = analogRead(0); // Left - value gets higher when it gets closer 
+  Input2 = analogRead(1); // Right - value gets higher when it gets closer 
   
   int output_int = Output; // Left
   int output2_int = Output2; // Right
-  
+
+
+  // Stud test: 
+  //Input = 700;
+   
   myPID.Compute();
   myPID2.Compute();
 
-  
-  /**
-  statically(4000);
-  left();
-  statically(2000);
-  right();
-  statically(4000);
-  */
   Serial.print("Left: ");
-  Serial.println (Input);
+  Serial.print(" ");
+  Serial.print (Input);
+  Serial.print(" ");
+  Serial.print (Output);
+  Serial.print(" ");
   Serial.print("Right: ");
-  Serial.println (Input2);
+  Serial.print ("");
+  Serial.print (Input2);
+  Serial.print(" ");
+  Serial.println (Output2);
+  Serial.print ("Motor_left: ");
+  Serial.print (output2_int);
+  Serial.print (" ");
+  Serial.print ("Motor_right: ");
+  Serial.println (output_int);
   
   // Motor controls
-  motorL.run(-motorSpeedL + output_int);
-  motorR.run(motorSpeedR - output2_int);
-  delay(100);
+  //motorL.run(-motorSpeedL + output_int);
+  //motorR.run(motorSpeedR - output2_int);
+  
+  //motorL.run(-output2_int);
+  //motorR.run(output_int);
 }
 
