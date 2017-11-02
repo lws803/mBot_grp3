@@ -88,10 +88,7 @@ void loop()
   Serial.print ("Motor_right: ");
   Serial.println (output_int);
   
-  // Motor controls
-  //motorL.run(-motorSpeedL + output_int);
-  //motorR.run(motorSpeedR - output2_int);
-  
+  // Motor controls  
   //motorL.run(-output2_int);
   //motorR.run(output_int);
 }
