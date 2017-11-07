@@ -19,9 +19,27 @@ MeDCMotor motorL(M1);
 MeDCMotor motorR(M2);
 
 // notes in the melody
-int notes[] = { NOTE_C4, NOTE_D4, NOTE_E4, NOTE_C4, NOTE_C4, NOTE_D4, NOTE_E4, NOTE_C4, NOTE_E4, NOTE_F4, NOTE_G4, 0, NOTE_E4, NOTE_F4, NOTE_G4, 0, NOTE_G4, NOTE_A4, NOTE_G4, NOTE_F4, NOTE_E4, NOTE_C4, NOTE_G4, NOTE_A4, NOTE_G4, NOTE_F4, NOTE_E4, NOTE_C4, NOTE_C4, NOTE_G3, NOTE_C4, 0, NOTE_C4, NOTE_G3, NOTE_C4, 0 };
+int notes[] = {
+  NOTE_C4, NOTE_D4, NOTE_E4, NOTE_C4,
+  NOTE_C4, NOTE_D4, NOTE_E4, NOTE_C4,
+  NOTE_E4, NOTE_F4, NOTE_G4, 0,
+  NOTE_E4, NOTE_F4, NOTE_G4, 0,
+  NOTE_G4, NOTE_A4, NOTE_G4, NOTE_F4, NOTE_E4, NOTE_C4,
+  NOTE_G4, NOTE_A4, NOTE_G4, NOTE_F4, NOTE_E4, NOTE_C4,
+  NOTE_C4, NOTE_G3, NOTE_C4, 0,
+  NOTE_C4, NOTE_G3, NOTE_C4, 0
+};
 // note durations: 4 = quarter note, 8 = eighth note, etc.
-float noteDurations[] = { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 16/3.0, 16, 16/3.0, 16, 4, 4, 16/3.0, 16, 16/3.0, 16, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };
+float noteDurations[] = {
+  4, 4, 4, 4,
+  4, 4, 4, 4,
+  4, 4, 4, 4,
+  4, 4, 4, 4,
+  16/3.0, 16, 16/3.0, 16, 4, 4,
+  16/3.0, 16, 16/3.0, 16, 4, 4,
+  4, 4, 4, 4,
+  4, 4, 4, 4
+};
 
 // PID setups
 double outputL, outputR, inputL,inputR, setpointL, setpointR;
@@ -51,8 +69,7 @@ void right() {
 
 double echolocation() {
   double duration;
-  double distance;
-  
+  double distance;  
   pinMode(ULTRASONIC_SENSOR, OUTPUT);
   digitalWrite(ULTRASONIC_SENSOR, LOW);
   delayMicroseconds(2);
@@ -61,8 +78,7 @@ double echolocation() {
   digitalWrite(ULTRASONIC_SENSOR, LOW);
   pinMode(ULTRASONIC_SENSOR, INPUT);
   duration = pulseIn(ULTRASONIC_SENSOR, HIGH, TIMEOUT);
-  distance = duration / 2.0 * 0.034;
-  
+  distance = duration / 2.0 * 0.034;  
   Serial.print("\n\nDistance to the front wall: ");
   Serial.println(distance);  
   return distance;  
@@ -101,9 +117,7 @@ int win() {
     delay(pauseBetweenNotes);
   }
   wait();
-  while(1) {
-    delay(1000);
-  }
+  while(1) delay(1000);
 }
 
 void setup()
