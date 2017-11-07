@@ -96,7 +96,7 @@ int lightChallenge() {
 int win() {
   for (int thisNote = 0; thisNote < (sizeof(notes) / sizeof(int)); thisNote++) {
     float noteDuration = 2000 / noteDurations[thisNote];
-    float pauseBetweenNotes = noteDuration + 1;
+    float pauseBetweenNotes = noteDuration * 1.3;
     tone(BUZZER, notes[thisNote], noteDuration);
     delay(pauseBetweenNotes);
   }
