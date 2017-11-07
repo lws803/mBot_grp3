@@ -119,7 +119,7 @@ void loop()
     Serial.print(Input2);
     Serial.print(", ");
     Serial.println(Output2);
-    
+    // TODO: Check the outputs again with serial monitor 
     // Motor controls  
     motorL.run(-Output/3 - 100);
     motorR.run(Output2/3 + 100);
