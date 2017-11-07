@@ -112,18 +112,19 @@ void setup()
 
 void loop()
 {
-  int state = encounter();
-  while (!state) {
+  while (!encounter()) {
     pid_move_straight(100);
   }else {
     // Stop motor
     motorL.run(0);
     motorR.run(0);
   }
-
+  
+  int state = encounter();
   // Check state and determine action if none, continue with loop
   switch (state) {
-    case 1: 
+    case 1:
+    // Ultrasonic-u desu  
     break;
     case 2: 
     break;
