@@ -59,7 +59,7 @@ void pid_move_straight (uint8_t desired_spd) {
   myPID.Compute();
   myPID2.Compute();
 
- /**
+
   Serial.print("Left: ");
   Serial.print(" ");
   Serial.print (Input);
@@ -71,20 +71,22 @@ void pid_move_straight (uint8_t desired_spd) {
   Serial.print (Input2);
   Serial.print(" ");
   Serial.println (Output2);
-  */
+
 
   
   // Motor controls  
-  motorL.run(-Output/3 - desired_spd);
-  motorR.run(Output2 + desired_spd);
+  //motorL.run(-Output/3 - desired_spd);
+  //motorR.run(Output2 + desired_spd);
 }
 
-int encouter(void) {
+int encounter(void) {
   /**
    * 0 means no encounters 
    * 1 means encounter wall with ultrasonic sensor  
    * 2 means encouter black line 
    */
+   long duration;
+   double distance;
    pinMode(ULTRASONIC_SENSOR_PIN, OUTPUT);
    digitalWrite(ULTRASONIC_SENSOR_PIN, LOW);
    delayMicroseconds(2);

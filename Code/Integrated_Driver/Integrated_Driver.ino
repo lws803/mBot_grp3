@@ -14,8 +14,8 @@ uint8_t motorSpeedR = 100;
 
 // PID setups
 double Output, Output2, Input, Input2, Setpoint, Setpoint2;
-PID myPID(&Input, &Output, &Setpoint,1, 0, 0, DIRECT);
-PID myPID2(&Input2, &Output2, &Setpoint2, 3, 0, 0, DIRECT);
+PID myPID(&Input, &Output, &Setpoint,1, 0, 1, DIRECT); // Left 
+PID myPID2(&Input2, &Output2, &Setpoint2, 1, 0, 1, DIRECT); // Right
 
 // Raw driving functions
 void statically(int duration) {
@@ -36,16 +36,16 @@ void backward(int duration) {
 void left() {
   motorL.run(motorSpeedL);
   motorR.run(motorSpeedR);
-  delay(716);
+  delay(750);
 }
 void right() {
   motorL.run(-motorSpeedL);
   motorR.run(-motorSpeedR);
-  delay(717);
+  delay(750);
 }
 
 double echolocation() {
-  long duration;
+  double duration;
   double distance;
   
   pinMode(ULTRASONIC_SENSOR_PIN, OUTPUT);
@@ -76,9 +76,9 @@ int blackLine() {
 
 void setup()
 {
-  // PID controls, above this value it will set output to 0
-  Setpoint = 430; // Left sensor
-  Setpoint2 = 80; // Right sensor
+  // PID controls, above this value it will decrease rapidly
+  Setpoint = 400; // Left sensor
+  Setpoint2 = 400; // Right sensor
   // Turn the PID on
   myPID.SetMode(AUTOMATIC);
   myPID2.SetMode(AUTOMATIC);
@@ -88,6 +88,7 @@ void setup()
 
 void loop()
 {
+  delay(1000);
   // Read voltage values across IR receivers
   Input = analogRead(A0); // Left - value gets lower when it gets closer
   Input2 = analogRead(A3); // Right - value gets lower when it gets closer
@@ -97,13 +98,13 @@ void loop()
   if(blackLine()) {
     statically(5000); // To be modified
   }
-
+/*
   else if(d < 10.0) {
-    if(Input > 600 && Input2 > 450); // Keep going forward and wait for the black line to be detected
-    else if(Input > 600) left(); // Only left side is empty
-    else if(Input2 > 450) right(); // Only right side is empty
+    if(Input > 610 && Input2 > 520); // Keep going forward and wait for the black line to be detected (junction)
+    else if(Input > 620) left(); // Only left side is empty
+    else if(Input2 > 530) right(); // Only right side is empty
     // Else it is a failure of the ultrasonic sensor
-  }
+  } */
 
   else {
     // Computation of PID outputs
@@ -121,6 +122,6 @@ void loop()
     
     // Motor controls  
     motorL.run(-Output/3 - 100);
-    motorR.run(Output2 + 100);
+    motorR.run(Output2/3 + 100);
   }
 }
