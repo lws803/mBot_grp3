@@ -12,6 +12,8 @@ uint8_t motorSpeedR = 100;
 
 double Output, Output2, Input, Input2, Setpoint, Setpoint2;
 
+int state = 0;
+
 PID myPID(&Input, &Output, &Setpoint,1,0,0, DIRECT);
 PID myPID2(&Input2, &Output2, &Setpoint2, 3, 0, 0, DIRECT);
 
@@ -93,8 +95,14 @@ int encouter(void) {
    duration = pulseIn(ULTRASONIC_SENSOR_PIN, HIGH, TIMEOUT);
    distance = duration / 2.0 * 0.034;
    if(distance < 10.0) {
+     state = 1;
      return 1; // Encounter wall
    }
+
+  // Line detector 
+
+  
+  state = 0;
   return 0; // No encounters by default 
 }
 
@@ -114,19 +122,19 @@ void loop()
 {
   while (!encounter()) {
     pid_move_straight(100);
-  }else {
-    // Stop motor
-    motorL.run(0);
-    motorR.run(0);
   }
-  
-  int state = encounter();
+  // Stop motor
+  motorL.run(0);
+  motorR.run(0);
+
+    
   // Check state and determine action if none, continue with loop
   switch (state) {
     case 1:
     // Ultrasonic-u desu  
     break;
-    case 2: 
+    case 2:
+    // Line detector desu 
     break;
   }
 }
