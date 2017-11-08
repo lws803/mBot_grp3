@@ -14,11 +14,9 @@
 #define IR_SIDE_R A0
 
 // Turning controls, above this value it will recognize as clear path
-#define EMPTY_L 890
-#define EMPTY_R 860
 // PID controls, above this value it will decrease rapidly
-double setpointL = 830; // Left sensor
-double setpointR = 800; // Right sensor
+double setpointL = 830, EMPTY_L; // Left sensor
+double setpointR = 800, EMPTY_R; // Right sensor
 
 // Motor setups
 MeDCMotor motorL(M1);
@@ -57,9 +55,9 @@ void wait() {
   motorR.stop();
 }
 void go() {
-  motorL.run(-255);
-  motorR.run(255);
-  delay(500);
+  motorL.run(-100);
+  motorR.run(100);
+  delay(1000);
 }
 void left() {
   motorL.run(130);
@@ -149,7 +147,10 @@ void setup()
   }
   setpointL = left_sum/10 - 30;
   setpointR = right_sum/10 - 50;
-
+  
+  EMPTY_L = setpointL + 100;
+  EMPTY_R = setpointR + 100;
+  
   Serial.begin (9600);
 }
 
@@ -180,25 +181,25 @@ void loop()
     }    
   }
 
-  else if(d < 10.0 && d) {
-    if(inputL > EMPTY_L && inputR <= EMPTY_R) { // Only left side is empty
+  else if(d < 15.0 && d) {
+    if(inputL > EMPTY_L) { // Only left side is empty
       left();
       go();
     }
-    if(inputR > EMPTY_R && inputL <= EMPTY_L) { // Only right side is empty
+    else if(inputR > EMPTY_R) { // Only right side is empty
       right();
       go();
     }
     // Else it is a failure of the ultrasonic sensor
   }
 
-  else if(inputR < EMPTY_R && inputL < EMPTY_L) {
+  else {
     // Computation of PID outputs
     myPID_L.Compute();
     myPID_R.Compute();
     
     // Motor controls
-    motorL.run(-(outputL + 140));
-    motorR.run(outputR + 140);
+    motorL.run(-(outputL + 110));
+    motorR.run(outputR + 110);
   }
 }
