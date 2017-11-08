@@ -11,15 +11,29 @@ MeDCMotor motorR(M2);
 
 double outputL, outputR, inputL, inputR, setpointL, setpointR; 
 
-PID myPID_L(&inputL, &outputL, &setpointL,1,1,2, DIRECT);
-PID myPID_R(&inputR, &outputR, &setpointR,1,1,2, DIRECT);
+PID myPID_L(&inputL, &outputL, &setpointL,1,2,2, DIRECT); // Maybe increase the integral to make it smoother 
+PID myPID_R(&inputR, &outputR, &setpointR,1,2,2, DIRECT);
 
 void setup() {
-  setpointL = 630;
-  setpointR = 630;
+  inputL = analogRead(IR_SIDE_L);
+  inputR = analogRead (IR_SIDE_R);
+  //setpointL = 650;
+  //setpointR = 850;
   myPID_L.SetMode(AUTOMATIC);
   myPID_R.SetMode(AUTOMATIC);
+  
+  double left_sum = 0, right_sum = 0;
+  delay(1000);
+  for (int i = 0; i < 10; i++) {
+    left_sum += inputL;
+    right_sum += inputR;
+    delay (100);
+  }
+  setpointL = left_sum/10 - 30;
+  setpointR = right_sum/10 - 50;
+
   Serial.begin (9600);
+
 }
 
 void loop() {
