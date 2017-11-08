@@ -181,17 +181,17 @@ void loop()
     }    
   }
 
-  else if(d < 15.0 && d) {
-    if(inputL > EMPTY_L) { // Only left side is empty
-      left();
-      go();
-    }
-    else if(inputR > EMPTY_R) { // Only right side is empty
-      right();
-      go();
-    }
-    // Else it is a failure of the ultrasonic sensor
+  else if(d < 15.0 && d && inputL > EMPTY_L) {
+    // Only left side is empty
+    left();
+    go();
   }
+  else if(d < 15.0 && d && inputR > EMPTY_R) { 
+    // Only right side is empty
+    right();
+    go();
+  }
+    // Else it is a failure of the ultrasonic sensor
 
   else {
     // Computation of PID outputs
