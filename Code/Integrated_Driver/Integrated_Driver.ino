@@ -10,13 +10,23 @@
 #define ULTRASONIC_SENSOR 10
 #define IR_DOWN_L 11
 #define IR_DOWN_R 12
-#define IR_SIDE_L A0
-#define IR_SIDE_R A1
-int emptyL, emptyR, soundReturn, lightReturn;
+#define IR_SIDE_L A1
+#define IR_SIDE_R A0
+
+// Turning controls, above this value it will recognize as clear path
+#define EMPTY_L 890
+#define EMPTY_R 860
+// PID controls, above this value it will decrease rapidly
+double setpointL = 830; // Left sensor
+double setpointR = 800; // Right sensor
 
 // Motor setups
 MeDCMotor motorL(M1);
 MeDCMotor motorR(M2);
+// PID setups
+double outputL, outputR, inputL,inputR;
+PID myPID_L(&inputL, &outputL, &setpointL, 1, 1, 2, DIRECT); // Left PID
+PID myPID_R(&inputR, &outputR, &setpointR, 1, 1, 2, DIRECT); // Right PID
 
 // notes in the melody
 int notes[] = {
@@ -41,11 +51,6 @@ float noteDurations[] = {
   4, 4, 4, 4
 };
 
-// PID setups
-double outputL, outputR, inputL,inputR, setpointL, setpointR;
-PID myPID_L(&inputL, &outputL, &setpointL, 1, 1, 2, DIRECT); // Left PID
-PID myPID_R(&inputR, &outputR, &setpointR, 1, 1, 2, DIRECT); // Right PID
-
 // Raw driving functions
 void wait() {
   motorL.stop();
@@ -54,7 +59,7 @@ void wait() {
 void go() {
   motorL.run(-255);
   motorR.run(255);
-  delay(1000);
+  delay(500);
 }
 void left() {
   motorL.run(100);
@@ -69,7 +74,7 @@ void right() {
 
 double echolocation() {
   double duration;
-  double distance;  
+  double distance;
   pinMode(ULTRASONIC_SENSOR, OUTPUT);
   digitalWrite(ULTRASONIC_SENSOR, LOW);
   delayMicroseconds(2);
@@ -101,6 +106,8 @@ int soundChallenge() {
   if(v >= 0.0 && v < 1.0) return 0;
   if(v >= 1.0 && v < 2.3) return 1;
   if(v >= 2.3 && v < 5.0) return 2;
+  Serial.print("Sound sensor feedback voltage: ");
+  Serial.println(v);
 }
 int lightChallenge() {
   double v = (double)analogRead(LIGHT) / 1023.0;
@@ -108,43 +115,39 @@ int lightChallenge() {
   if(v >= 1.3 && v < 2.6) return 1;
   if(v >= 2.6 && v < 3.9) return 2;
   if(v >= 3.9 && v < 5.0) return 3;
+  Serial.print("Light sensor feedback voltage: ");
+  Serial.println(v);
 }
 int win() {
   for (int thisNote = 0; thisNote < (sizeof(notes) / sizeof(int)); thisNote++) {
     float noteDuration = 2000 / noteDurations[thisNote];
-    float pauseBetweenNotes = noteDuration * 1.3;
+    float pauseBetweenNotes = noteDuration * 1.30;
     tone(BUZZER, notes[thisNote], noteDuration);
     delay(pauseBetweenNotes);
   }
   wait();
-  while(1) delay(1000);
+  while(1) {
+    delay(1000);
+  }
 }
 
 void setup()
 {
-  // PID controls, above this value it will decrease rapidly
-  setpointL = 600; // Left sensor
-  setpointR = 450; // Right sensor
   // Turn the PID on
   myPID_L.SetMode(AUTOMATIC);
   myPID_R.SetMode(AUTOMATIC);
-
-  // Turning controls, above this value it will recognize as clear path
-  emptyL = 620;
-  emptyR = 530;
-
+  
+  delay(1000);
   Serial.begin(9600);
 }
 
 void loop()
 {
-  //delay(1000);
   double d = echolocation();
   // Read voltage values across IR receivers
-  inputL = analogRead(1); // Left - value gets lower when it gets closer
-  inputR = analogRead(0); // Right - value gets lower when it gets closer  
-
-  /*
+  inputL = analogRead(IR_SIDE_L); // Left - value gets lower when it gets closer
+  inputR = analogRead(IR_SIDE_R); // Right - value gets lower when it gets closer  
+  
   if(blackLine()) {
     wait();
     switch(soundChallenge()) {
@@ -166,17 +169,22 @@ void loop()
   }
 
   else if(d < 10.0 && d) {
-    if(inputL > emptyL && inputR <= emptyR) left(); // Only left side is empty
-    if(inputR > emptyR && inputL <= emptyL) right(); // Only right side is empty
+    if(inputL > EMPTY_L && inputR <= EMPTY_R) { // Only left side is empty
+      left();
+      go();
+    }
+    if(inputR > EMPTY_R && inputL <= EMPTY_L) { // Only right side is empty
+      right();
+      go();
+    }
     // Else it is a failure of the ultrasonic sensor
   }
 
-  else { */
+  else if(inputR < EMPTY_R && inputL < EMPTY_L) {
     // Computation of PID outputs
     myPID_L.Compute();
     myPID_R.Compute();
-
-    /**
+  
     Serial.print("Leftward IR: ");
     Serial.print(inputL);
     Serial.print(", ");
@@ -185,14 +193,9 @@ void loop()
     Serial.print(inputR);
     Serial.print(", ");
     Serial.println(outputR);
-    */
-
-    Serial.print (inputL);
-    Serial.print (" ");
-    Serial.print (inputR);
     
     // Motor controls
     motorL.run(-(outputL + 100));
     motorR.run(outputR + 100);
-  //}
+  }
 }
