@@ -29,8 +29,8 @@ void setup() {
     right_sum += inputR;
     delay (100);
   }
-  setpointL = left_sum/10 - 30;
-  setpointR = right_sum/10 - 50;
+  setpointL = left_sum/10 - 50;
+  setpointR = right_sum/10 - 70;
 
   Serial.begin (9600);
 
