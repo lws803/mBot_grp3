@@ -175,18 +175,6 @@ void loop()
     // Computation of PID outputs
     myPID_L.Compute();
     myPID_R.Compute();
-
-    /**
-    Serial.print("Leftward IR: ");
-    Serial.print(inputL);
-    Serial.print(", ");
-    Serial.print(outputL);
-    Serial.print("\tRight IR: ");
-    Serial.print(inputR);
-    Serial.print(", ");
-    Serial.println(outputR);
-    */
-
     Serial.print (inputL);
     Serial.print (" ");
     Serial.print (inputR);
