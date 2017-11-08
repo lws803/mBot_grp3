@@ -25,8 +25,8 @@ MeDCMotor motorL(M1);
 MeDCMotor motorR(M2);
 // PID setups
 double outputL, outputR, inputL,inputR;
-PID myPID_L(&inputL, &outputL, &setpointL, 1, 1, 2, DIRECT); // Left PID
-PID myPID_R(&inputR, &outputR, &setpointR, 1, 1, 2, DIRECT); // Right PID
+PID myPID_L(&inputL, &outputL, &setpointL, 1, 2, 2, DIRECT); // Left PID
+PID myPID_R(&inputR, &outputR, &setpointR, 1, 2, 2, DIRECT); // Right PID
 
 // notes in the melody
 int notes[] = {
@@ -133,12 +133,24 @@ int win() {
 
 void setup()
 {
-  // Turn the PID on
+  inputL = analogRead(IR_SIDE_L);
+  inputR = analogRead (IR_SIDE_R);
+  //setpointL = 650;
+  //setpointR = 850;
   myPID_L.SetMode(AUTOMATIC);
   myPID_R.SetMode(AUTOMATIC);
   
+  double left_sum = 0, right_sum = 0;
   delay(1000);
-  Serial.begin(9600);
+  for (int i = 0; i < 10; i++) {
+    left_sum += inputL;
+    right_sum += inputR;
+    delay (100);
+  }
+  setpointL = left_sum/10 - 30;
+  setpointR = right_sum/10 - 50;
+
+  Serial.begin (9600);
 }
 
 void loop()
@@ -184,18 +196,9 @@ void loop()
     // Computation of PID outputs
     myPID_L.Compute();
     myPID_R.Compute();
-  
-    Serial.print("Leftward IR: ");
-    Serial.print(inputL);
-    Serial.print(", ");
-    Serial.print(outputL);
-    Serial.print("\tRight IR: ");
-    Serial.print(inputR);
-    Serial.print(", ");
-    Serial.println(outputR);
     
     // Motor controls
-    motorL.run(-(outputL + 100));
-    motorR.run(outputR + 100);
+    motorL.run(-(outputL + 140));
+    motorR.run(outputR + 140);
   }
 }
