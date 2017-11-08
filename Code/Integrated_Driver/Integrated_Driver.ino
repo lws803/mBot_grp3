@@ -43,8 +43,8 @@ float noteDurations[] = {
 
 // PID setups
 double outputL, outputR, inputL,inputR, setpointL, setpointR;
-PID myPID_L(&inputL, &outputL, &setpointL, 1, 0, 1, DIRECT); // Left PID
-PID myPID_R(&inputR, &outputR, &setpointR, 1, 0, 1, DIRECT); // Right PID
+PID myPID_L(&inputL, &outputL, &setpointL, 1, 1, 2, DIRECT); // Left PID
+PID myPID_R(&inputR, &outputR, &setpointR, 1, 1, 2, DIRECT); // Right PID
 
 // Raw driving functions
 void wait() {
@@ -123,8 +123,8 @@ int win() {
 void setup()
 {
   // PID controls, above this value it will decrease rapidly
-  setpointL = 400; // Left sensor
-  setpointR = 400; // Right sensor
+  setpointL = 600; // Left sensor
+  setpointR = 450; // Right sensor
   // Turn the PID on
   myPID_L.SetMode(AUTOMATIC);
   myPID_R.SetMode(AUTOMATIC);
@@ -138,12 +138,13 @@ void setup()
 
 void loop()
 {
-  delay(1000);
+  //delay(1000);
   double d = echolocation();
   // Read voltage values across IR receivers
-  inputL = analogRead(IR_SIDE_L); // Left - value gets lower when it gets closer
-  inputR = analogRead(IR_SIDE_R); // Right - value gets lower when it gets closer  
-  
+  inputL = analogRead(1); // Left - value gets lower when it gets closer
+  inputR = analogRead(0); // Right - value gets lower when it gets closer  
+
+  /*
   if(blackLine()) {
     wait();
     switch(soundChallenge()) {
@@ -170,11 +171,12 @@ void loop()
     // Else it is a failure of the ultrasonic sensor
   }
 
-  else {
+  else { */
     // Computation of PID outputs
     myPID_L.Compute();
     myPID_R.Compute();
-  
+
+    /**
     Serial.print("Leftward IR: ");
     Serial.print(inputL);
     Serial.print(", ");
@@ -183,9 +185,14 @@ void loop()
     Serial.print(inputR);
     Serial.print(", ");
     Serial.println(outputR);
+    */
+
+    Serial.print (inputL);
+    Serial.print (" ");
+    Serial.print (inputR);
     
     // Motor controls
-    motorL.run(-(outputL / 3 + 100));
-    motorR.run(outputR / 3 + 100);
-  }
+    motorL.run(-(outputL + 100));
+    motorR.run(outputR + 100);
+  //}
 }
