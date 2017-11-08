@@ -62,14 +62,14 @@ void go() {
   delay(500);
 }
 void left() {
-  motorL.run(100);
-  motorR.run(100);
-  delay(750);
+  motorL.run(130);
+  motorR.run(130);
+  delay(575);
 }
 void right() {
-  motorL.run(-100);
-  motorR.run(-100);
-  delay(750);
+  motorL.run(-130);
+  motorR.run(-130);
+  delay(575);
 }
 
 double echolocation() {
