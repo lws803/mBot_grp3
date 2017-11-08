@@ -145,8 +145,8 @@ void setup()
     right_sum += inputR;
     delay (100);
   }
-  setpointL = left_sum/10 - 30;
-  setpointR = right_sum/10 - 50;
+  setpointL = left_sum/10 + 30;
+  setpointR = right_sum/10 + 50;
   
   EMPTY_L = setpointL + 100;
   EMPTY_R = setpointR + 100;
@@ -199,7 +199,7 @@ void loop()
     myPID_R.Compute();
     
     // Motor controls
-    motorL.run(-(outputL + 110));
-    motorR.run(outputR + 110);
+    motorL.run(-(outputL + 140));
+    motorR.run(outputR + 140);
   }
 }

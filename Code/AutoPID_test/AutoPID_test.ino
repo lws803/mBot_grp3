@@ -11,8 +11,16 @@ MeDCMotor motorR(M2);
 
 double outputL, outputR, inputL, inputR, setpointL, setpointR; 
 
-PID myPID_L(&inputL, &outputL, &setpointL,1,2,2, DIRECT); // Maybe increase the integral to make it smoother 
-PID myPID_R(&inputR, &outputR, &setpointR,1,2,2, DIRECT);
+double aggKp_l=3, aggKi_l=0, aggKd_l=1;
+
+double consKp_l=1, consKi_l=0.2, consKd_l=0;
+
+double aggKp_r=3.5, aggKi_r=0, aggKd_r=1;
+
+double consKp_r=1, consKi_r=0.2, consKd_r=0;
+
+PID myPID_L(&inputL, &outputL, &setpointL,consKp_l,consKi_l,consKd_l, DIRECT); // Maybe increase the integral to make it smoother 
+PID myPID_R(&inputR, &outputR, &setpointR,consKp_r,consKi_r,consKd_r, DIRECT);
 
 void setup() {
   inputL = analogRead(IR_SIDE_L);
@@ -29,24 +37,46 @@ void setup() {
     right_sum += inputR;
     delay (100);
   }
-  setpointL = left_sum/10 - 50;
-  setpointR = right_sum/10 - 70;
+  setpointL = left_sum/10;
+  setpointR = right_sum/10;
 
   Serial.begin (9600);
 
 }
 
 void loop() {
-    inputL = analogRead(IR_SIDE_L);
-    inputR = analogRead (IR_SIDE_R);
+    inputL = analogRead(IR_SIDE_L)  ;
+    inputR = analogRead (IR_SIDE_R) ;
+
+    double gap_l = abs(setpointL-inputL); //distance away from setpoint
+    if(gap_l<10)
+    {  //we're close to setpoint, use conservative tuning parameters
+      myPID_L.SetTunings(consKp_l, consKi_l, consKd_l);
+    }
+    else
+    {
+     //we're far from setpoint, use aggressive tuning parameters
+      myPID_L.SetTunings(aggKp_l, aggKi_l, aggKd_l);
+    }
+
+    double gap_r = abs(setpointR-inputR); //distance away from setpoint
+    if(gap_r<10)
+    {  //we're close to setpoint, use conservative tuning parameters
+      myPID_R.SetTunings(consKp_r, consKi_r, consKd_r);
+    }
+    else
+    {
+     //we're far from setpoint, use aggressive tuning parameters
+      myPID_R.SetTunings(aggKp_r, aggKi_r, aggKd_r);
+    }
 
     myPID_L.Compute();
     myPID_R.Compute();
     // Motor controls
     switch (runMotor) {
       case 1: 
-      motorL.run(-(outputL + 140));
-      motorR.run(outputR + 140);
+      motorL.run(-(140 + outputL/2));
+      motorR.run(140 + outputR/2);
       break;
       case 0:
       Serial.print (outputL);
@@ -54,4 +84,5 @@ void loop() {
       Serial.println(outputR);
       break;
     }
+    delay (100);
 }
