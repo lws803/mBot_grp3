@@ -1,6 +1,11 @@
+#include "MeOrion.h"
+
 // Sensor setups
 #define LIGHT A6
 
+// Motor setups
+MeDCMotor motorL(M1);
+MeDCMotor motorR(M2);
 // Raw driving functions
 void wait() {
   motorL.stop();
@@ -39,7 +44,6 @@ void setup()
 {
   Serial.begin (9600);
 }
-
 void loop()
 {
   int f = lightChallenge();
