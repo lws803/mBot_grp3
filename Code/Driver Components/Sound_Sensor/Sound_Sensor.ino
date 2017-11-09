@@ -39,8 +39,8 @@ int soundChallenge() {
   Serial.print("Sound sensor feedback voltage: ");
   Serial.println(v);
   if(v >= 0.0 && v < 1.0) return 0;
-  if(v >= 1.0 && v < 2.3) { right(); go(); }
-  if(v >= 2.3 && v < 5.0) { left(); go(); }
+  else if(v >= 1.0 && v < 2.3) { right(); go(); }
+  else if(v >= 2.3 && v < 5.0) { left(); go(); }
   return 1;
 }
 
