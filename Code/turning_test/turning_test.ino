@@ -5,6 +5,7 @@
 #define IR_SIDE_R A0
 
 int count = 0, timer = 0;
+double setpointL, setpointR;
 
 double echolocation() {
   double duration;
@@ -52,7 +53,18 @@ double echolocation_2 () {
 }
 
 void setup() {
-  // put your setup code here, to run once:
+  double inputL = analogRead(IR_SIDE_L)  ;
+  double inputR = analogRead(IR_SIDE_R)  ;
+  
+  double left_sum = 0, right_sum = 0;
+  delay(1000);
+  for (int i = 0; i < 10; i++) {
+    left_sum += inputL;
+    right_sum += inputR;
+    delay (100);
+  }
+  setpointL = left_sum/10;
+  setpointR = right_sum/10;
   Serial.begin (9600);
 
 }
@@ -72,23 +84,14 @@ void loop() {
       count = 0;
     }
 
-    
     // Cut off to turn, decrease the count to make it more responsive, add in IR sensor conditions here 
     // TODO: Measure difference between the two IR sensors and determine if it shd turn right or left. 
-    if (count > 50 && inputL > 600) {
+    double adjusted_L = inputL - setpointL; 
+    double adjusted_R = inputR - setpointR;
+    if (count > 50) {
       // Turn right 
-      Serial.print (200);
-    }else {
-      Serial.print (0);
+      Serial.print (adjusted_L - adjusted_R);
     }
-    Serial.print (" ");
-    if (count > 50 && inputR > 600) {
-      // Turn left 
-      Serial.print (200);
-    }else {
-      Serial.print (0);
-    }
-    //Serial.print (count);
     Serial.println ("");
 
 }
