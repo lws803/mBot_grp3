@@ -1,7 +1,14 @@
 #include "MeOrion.h"
 
-// Sensor setups
+// Pins
+#define BUZZER 8
 #define LIGHT A6
+#define SOUND A3
+#define ULTRASONIC 10
+#define IR_DOWN_L 11
+#define IR_DOWN_R 12
+#define IR_SIDE_L A1
+#define IR_SIDE_R A0
 
 // Motor setups
 MeDCMotor motorL(M1);
@@ -28,11 +35,9 @@ void right() {
 }
 
 int lightChallenge() {
-  double v = (double)analogRead(LIGHT) / 1023.0;
-  
+  double v = (double)analogRead(LIGHT) / 1023.0 * 5.0;
   Serial.print("Light sensor voltage reading: ");
   Serial.println(v);
-  
   if(v >= 0.0 && v < 1.3) return 0;
   if(v >= 1.3 && v < 2.6) { right(); go(); }
   if(v >= 2.6 && v < 3.9) { left(); go(); }
