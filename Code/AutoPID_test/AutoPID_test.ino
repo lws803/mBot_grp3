@@ -5,7 +5,7 @@
 #define ULTRASONIC_SENSOR 10
 #define TIMEOUT 30000
 
-#define runMotor 1
+#define runMotor 0
 
 // Motor setups
 MeDCMotor motorL(M1);
@@ -14,15 +14,15 @@ MeDCMotor motorR(M2);
 int count = 0;
 double outputL, outputR, inputL, inputR, setpointL, setpointR; 
 
-double aggKp_l=3, aggKi_l=0, aggKd_l=1;
+//double aggKp_l=3, aggKi_l=0, aggKd_l=1;
 
 double consKp_l=1, consKi_l=0.2, consKd_l=0;
 
-double aggKp_r=3, aggKi_r=0, aggKd_r=1;
+//double aggKp_r=3, aggKi_r=0, aggKd_r=1;
 
 double consKp_r=1, consKi_r=0.2, consKd_r=0;
 
-PID myPID_L(&inputL, &outputL, &setpointL,consKp_l,consKi_l,consKd_l, DIRECT); // Maybe increase the integral to make it smoother 
+PID myPID_L(&inputL, &outputL, &setpointL,consKp_l,consKi_l,consKd_l, DIRECT); 
 PID myPID_R(&inputR, &outputR, &setpointR,consKp_r,consKi_r,consKd_r, DIRECT);
 
 double echolocation() {
@@ -83,29 +83,31 @@ void loop() {
     inputL = analogRead(IR_SIDE_L)  ;
     inputR = analogRead (IR_SIDE_R) ;
     int d = echolocation();
-
+    
+    /*
     double gap_l = abs(setpointL-inputL); //distance away from setpoint
     if(gap_l<10)
     {  //we're close to setpoint, use conservative tuning parameters
-      myPID_L.SetTunings(consKp_l, consKi_l, consKd_l);
+      //myPID_L.SetTunings(consKp_l, consKi_l, consKd_l);
     }
     else
     {
      //we're far from setpoint, use aggressive tuning parameters
-      myPID_L.SetTunings(aggKp_l, aggKi_l, aggKd_l);
+      //myPID_L.SetTunings(aggKp_l, aggKi_l, aggKd_l);
     }
 
     double gap_r = abs(setpointR-inputR); //distance away from setpoint
     if(gap_r<10)
     {  //we're close to setpoint, use conservative tuning parameters
-      myPID_R.SetTunings(consKp_r, consKi_r, consKd_r);
+      //myPID_R.SetTunings(consKp_r, consKi_r, consKd_r);
     }
     else
     {
      //we're far from setpoint, use aggressive tuning parameters
-      myPID_R.SetTunings(aggKp_r, aggKi_r, aggKd_r);
+      //myPID_R.SetTunings(aggKp_r, aggKi_r, aggKd_r);
     }
-
+    */
+    
     myPID_L.Compute();
     myPID_R.Compute();
     // Motor controls

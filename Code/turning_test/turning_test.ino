@@ -1,5 +1,5 @@
 #include "MeOrion.h"
-#define ULTRASONIC_SENSOR 10
+#define ULTRASONIC_SENSOR 12
 #define TIMEOUT 30000
 #define IR_SIDE_L A1
 #define IR_SIDE_R A0
@@ -90,7 +90,10 @@ void loop() {
     double adjusted_R = inputR - setpointR;
     if (count > 50) {
       // Turn right 
-      Serial.print (adjusted_L - adjusted_R);
+      Serial.print (100);
+      //Serial.print (adjusted_L - adjusted_R);
+    }else {
+      Serial.print (0);
     }
     Serial.println ("");
 
