@@ -39,9 +39,9 @@ int lightChallenge() {
   Serial.print("Light sensor voltage reading: ");
   Serial.println(v);
   if(v >= 0.0 && v < 1.3) return 0;
-  if(v >= 1.3 && v < 2.6) { right(); go(); }
-  if(v >= 2.6 && v < 3.9) { left(); go(); }
-  if(v >= 3.9 && v < 5.0) { go(); }
+  else if(v >= 1.3 && v < 2.6) { right(); go(); }
+  else if(v >= 2.6 && v < 3.9) { left(); go(); }
+  else if(v >= 3.9 && v < 5.0) { go(); }
   return 1;
 }
 
