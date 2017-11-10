@@ -2,10 +2,13 @@
 #include "PID_v1.h"
 #define IR_SIDE_L A1
 #define IR_SIDE_R A0
+#define IR_DOWN_L 11
+#define IR_DOWN_R 12
 #define ULTRASONIC_SENSOR 10
 #define TIMEOUT 30000
+#define SOUND A3
+#define LIGHT A6
 
-#define runMotor 0
 
 // Motor setups
 MeDCMotor motorL(M1);
@@ -14,11 +17,11 @@ MeDCMotor motorR(M2);
 int count = 0;
 double outputL, outputR, inputL, inputR, setpointL, setpointR; 
 
-double aggKp_l=1.5, aggKi_l=0, aggKd_l=1;
+double aggKp_l=2.5, aggKi_l=0, aggKd_l=1;
 
 double consKp_l=1, consKi_l=0.2, consKd_l=0;
 
-double aggKp_r=3.5, aggKi_r=0, aggKd_r=1.5;
+double aggKp_r=3.5, aggKi_r=0, aggKd_r=1;
 
 double consKp_r=1, consKi_r=0.2, consKd_r=0;
 
@@ -43,21 +46,72 @@ double echolocation() {
 void left() {
   motorL.run(130);
   motorR.run(130);
-  delay(575);
+  delay(540);
 }
 void right() {
   motorL.run(-130);
   motorR.run(-130);
-  delay(575);
+  delay(540);
 }
 
-void go() {
-  motorL.run(-100);
-  motorR.run(100);
-  delay(1000);
+void go(int seconds) {
+  motorL.run(-130);
+  motorR.run(130);
+  delay(seconds);
+}
+void reverse() {
+  motorL.run(130);
+  motorR.run(-130);
+  delay(200);
+}
+void wait() {
+  motorL.stop();
+  motorR.stop();
+  //delay (1000);
 }
 
+int blackLine() {
+  int blackL = digitalRead(IR_DOWN_L);
+  int blackR = digitalRead(IR_DOWN_R);
+  Serial.print("Downward IR left pin: ");
+  Serial.print(blackL);
+  Serial.print("\tDownward IR right pin: ");
+  Serial.println(blackR);
+  if(blackL || blackR) return 0;
+  else return 1;
+}
 
+int soundChallenge() {
+  // 
+  double average = 0, v;
+  for (int i = 0; i < 10; i++) {
+    average += (double)analogRead(SOUND) / 1023.0 * 5.0;
+    delay(100);
+  }
+  
+  v = average/10;
+  
+  if(v >= 0.0 && v < 1.0) return 0;
+  else if(v >= 1.0 && v < 2.3) { right(); }
+  else if(v >= 2.3 && v < 5.0) { left(); }
+  return 1;
+}
+
+int lightChallenge() {
+  double v = (double)analogRead(LIGHT) / 1023.0 * 5.0;
+  Serial.print("Light sensor voltage reading: ");
+  Serial.println(v);
+  if(v >= 0.0 && v < 1.3) return 0;
+  else if(v >= 1.3 && v < 2.6) { right(); }
+  else if(v >= 2.6 && v < 3.9) { left(); }
+  //else if(v >= 3.9 && v < 5.0) { }
+  return 1;
+}
+
+void win() {
+  Serial.println ("WON");
+  delay(1000000);
+}
 void setup() {
   inputL = analogRead(IR_SIDE_L);
   inputR = analogRead (IR_SIDE_R);
@@ -82,6 +136,8 @@ void setup() {
 void loop() {
     inputL = analogRead(IR_SIDE_L)  ;
     inputR = analogRead (IR_SIDE_R) ;
+
+    int f = blackLine();
     
     double gap_l = abs(setpointL-inputL); //distance away from setpoint
     if(gap_l<10)
@@ -104,19 +160,17 @@ void loop() {
      //we're far from setpoint, use aggressive tuning parameters
       myPID_R.SetTunings(aggKp_r, aggKi_r, aggKd_r);
     }
-    
-    myPID_L.Compute();
-    myPID_R.Compute();
-    // Motor controls
-    switch (runMotor) {
-      case 1: 
-      motorL.run(-(200 + outputL));
-      motorR.run(200 + outputR);
-      break;
-      case 0:
-      Serial.print (inputL);
-      Serial.print (" ");
-      Serial.println(inputR);
-      break;
+
+    if (f) {
+      wait();
+      if(!soundChallenge() && !lightChallenge())
+        win();
+      go(1000);
     }
+    else{
+      myPID_L.Compute();
+      myPID_R.Compute();
+      motorL.run(-(140 + outputL/2));
+      motorR.run(140 + outputR/2);
+    }    
 }

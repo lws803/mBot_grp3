@@ -35,12 +35,20 @@ void right() {
 }
 
 int soundChallenge() {
-  double v = (double)analogRead(SOUND) / 1023.0 * 5.0;
-  Serial.print("Sound sensor feedback voltage: ");
+  double average = 0, v;
+  for (int i = 0; i < 10; i++) {
+    average += (double)analogRead(SOUND) / 1023.0 * 5.0;
+    delay(100);
+  }
+  
+  v = average/10;
+  //Serial.print("Sound sensor feedback voltage: ");
   Serial.println(v);
+  /*
   if(v >= 0.0 && v < 1.0) return 0;
   else if(v >= 1.0 && v < 2.3) { right(); go(); }
   else if(v >= 2.3 && v < 5.0) { left(); go(); }
+  */
   return 1;
 }
 
@@ -50,7 +58,9 @@ void setup() {
 
 void loop() {
   int f = soundChallenge();
+  /*
   Serial.print("Value returned by soundChallenge() function: ");
   Serial.println(f);
-  Serial.println("\n");
+  */
+  delay (500);
 }
