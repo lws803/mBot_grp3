@@ -15,7 +15,7 @@ int notes[] = {
   NOTE_G4, NOTE_G4, NOTE_A4, NOTE_A4, NOTE_AS4, NOTE_AS4, NOTE_F4, NOTE_F4,
   NOTE_G4, NOTE_G4, NOTE_A4, NOTE_A4, NOTE_AS4, NOTE_AS4, NOTE_D4, NOTE_D4,
   NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4,
-  NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4,
+  NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4
 };
 // note durations: 4 = quarter note, 8 = eighth note, etc.
 float noteDurations[] = { 
@@ -34,5 +34,5 @@ float noteDurations[] = {
   16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
   16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
   16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
-  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16
 };
