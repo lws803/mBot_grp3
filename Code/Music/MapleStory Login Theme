@@ -1,0 +1,18 @@
+// notes in the melody
+int notes[] = { 
+  0, 0, NOTE_DS4, NOTE_F4, NOTE_G4, 0, NOTE_G4, 0, NOTE_G4, 0,
+  0, 0, NOTE_CS4, NOTE_F4, NOTE_GS4, 0, NOTE_GS4, 0, NOTE_GS4, 0,
+  0, 0, NOTE_CS4, NOTE_F4, NOTE_GS4, 0, NOTE_GS4, 0, NOTE_GS4, 0,
+  0, 0, NOTE_DS4, NOTE_F4, NOTE_G4, NOTE_F4, NOTE_DS4,
+  0, 0, NOTE_DS4, NOTE_F4, NOTE_G4, 0, NOTE_GS4, NOTE_AS4, NOTE_DS5, NOTE_GS4, NOTE_AS4, NOTE_DS5,
+  0, 0, NOTE_CS4, NOTE_F4, NOTE_GS4, 0, NOTE_DS5, NOTE_F5, NOTE_GS5, NOTE_G5, NOTE_F5, NOTE_DS5
+};
+// note durations: 4 = quarter note, 8 = eighth note, etc.
+float noteDurations[] = { 
+  4, 8, 4, 4, 4, 8, 4, 8, 4, 8,
+  4, 8, 4, 4, 4, 8, 4, 8, 4, 8,
+  4, 8, 4, 4, 4, 8, 4, 8, 4, 8,
+  4, 8, 4, 4, 8 / 3.0, 4, 2,
+  4, 8, 4, 4, 4, 8, 8, 8, 8, 8, 8, 8,
+  4, 8, 4, 4, 4, 8, 8, 8, 8, 8, 8, 8
+};
