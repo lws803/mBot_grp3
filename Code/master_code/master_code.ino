@@ -1,10 +1,11 @@
 #include "MeOrion.h"
 #include "PID_v1.h"
+#include "notes.h"
+#define BUZZER 8
 #define IR_SIDE_L A1
 #define IR_SIDE_R A0
 #define IR_DOWN_L 11
 #define IR_DOWN_R 12
-#define ULTRASONIC_SENSOR 10
 #define TIMEOUT 30000
 #define SOUND A3
 #define LIGHT A6
@@ -15,7 +16,7 @@ MeDCMotor motorL(M1);
 MeDCMotor motorR(M2);
 
 int count = 0;
-double outputL, outputR, inputL, inputR, setpointL, setpointR; 
+double outputL, outputR, inputL, inputR, setpointL, setpointR, win = 0; 
 
 double aggKp_l=2.5, aggKi_l=0, aggKd_l=1;
 
@@ -28,20 +29,57 @@ double consKp_r=1, consKi_r=0.2, consKd_r=0;
 PID myPID_L(&inputL, &outputL, &setpointL,consKp_l,consKi_l,consKd_l, DIRECT); 
 PID myPID_R(&inputR, &outputR, &setpointR,consKp_r,consKi_r,consKd_r, DIRECT);
 
-double echolocation() {
-  double duration;
-  double distance;
-  pinMode(ULTRASONIC_SENSOR, OUTPUT);
-  digitalWrite(ULTRASONIC_SENSOR, LOW);
-  delayMicroseconds(2);
-  digitalWrite(ULTRASONIC_SENSOR, HIGH);
-  delayMicroseconds(2);
-  digitalWrite(ULTRASONIC_SENSOR, LOW);
-  pinMode(ULTRASONIC_SENSOR, INPUT);
-  duration = pulseIn(ULTRASONIC_SENSOR, HIGH, TIMEOUT);
-  distance = duration / 2.0 * 0.034;  
-  return distance;  
+int notes[] = { 
+  NOTE_F5, NOTE_F5, NOTE_C5, NOTE_C5, NOTE_D5, NOTE_D5, NOTE_AS4, NOTE_AS4,
+  NOTE_A4, NOTE_A4, NOTE_AS4, NOTE_AS4, NOTE_G4, NOTE_G4, NOTE_A4, NOTE_A4,
+  NOTE_AS4, NOTE_AS4, NOTE_C5, NOTE_C5, NOTE_D5, NOTE_D5, NOTE_DS5, NOTE_DS5,
+  NOTE_C5, NOTE_C5, NOTE_D5, NOTE_D5, NOTE_DS5, NOTE_DS5, NOTE_A4, NOTE_A4,
+  NOTE_F5, NOTE_F5, NOTE_D5, NOTE_D5, NOTE_DS5, NOTE_DS5, NOTE_AS4, NOTE_AS4,
+  NOTE_C5, NOTE_C5, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_A4, NOTE_A4,
+  NOTE_AS4, NOTE_AS4, NOTE_C5, NOTE_C5, NOTE_D5, NOTE_D5, NOTE_AS4, NOTE_AS4,
+  NOTE_C5, NOTE_C5, NOTE_DS5, NOTE_DS5, NOTE_D5, NOTE_D5, NOTE_A4, NOTE_A4,
+  NOTE_G4, NOTE_G4, NOTE_A4, NOTE_A4, NOTE_AS4, NOTE_AS4, NOTE_F4, NOTE_F4,
+  NOTE_G4, NOTE_G4, NOTE_A4, NOTE_A4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4,
+  NOTE_G4, NOTE_G4, NOTE_A4, NOTE_A4, NOTE_AS4, NOTE_AS4, NOTE_C4, NOTE_C4,
+  NOTE_D5, NOTE_D5, NOTE_DS5, NOTE_DS5, NOTE_AS4, NOTE_AS4, NOTE_A4, NOTE_A4,
+  NOTE_G4, NOTE_G4, NOTE_A4, NOTE_A4, NOTE_AS4, NOTE_AS4, NOTE_F4, NOTE_F4,
+  NOTE_G4, NOTE_G4, NOTE_A4, NOTE_A4, NOTE_AS4, NOTE_AS4, NOTE_D4, NOTE_D4,
+  NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4,
+  NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4, NOTE_AS4
+};
+// note durations: 4 = quarter note, 8 = eighth note, etc.
+float noteDurations[] = { 
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16,
+  16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16, 16 / 3.0, 16
+};
+
+
+int win_play() {
+  for (int thisNote = 0; thisNote < (sizeof(notes) / sizeof(int)); thisNote++) {
+    float noteDuration = 2000 / noteDurations[thisNote];
+    float pauseBetweenNotes = noteDuration * 1.30;
+    tone(BUZZER, notes[thisNote], noteDuration);
+    delay(pauseBetweenNotes);
+  }
+  while(1) {
+    delay(1000);
+  }
 }
+
 
 void left() {
   motorL.run(130);
@@ -69,6 +107,8 @@ void wait() {
   motorR.stop();
   //delay (1000);
 }
+
+
 
 int blackLine() {
   int blackL = digitalRead(IR_DOWN_L);
@@ -108,10 +148,7 @@ int lightChallenge() {
   return 1;
 }
 
-void win() {
-  Serial.println ("WON");
-  delay(1000000);
-}
+
 void setup() {
   inputL = analogRead(IR_SIDE_L);
   inputR = analogRead (IR_SIDE_R);
@@ -163,11 +200,15 @@ void loop() {
 
     if (f) {
       wait();
-      if(!soundChallenge() && !lightChallenge())
-        win();
+      if(!soundChallenge() && !lightChallenge()) {
+        win = 1;
+        win_play();
+        motorL.run(0);
+        motorR.run(0);
+      }
       go(1000);
     }
-    else{
+    else if (!win){
       myPID_L.Compute();
       myPID_R.Compute();
       motorL.run(-(140 + outputL/2));

@@ -62,5 +62,6 @@ void loop() {
   Serial.print("Value returned by soundChallenge() function: ");
   Serial.println(f);
   */
-  delay (500);
+  //motorL.run(255);
+  //motorR.run(255);
 }
