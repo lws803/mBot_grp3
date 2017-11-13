@@ -16,7 +16,7 @@
 #define TIMEOUT 30000
 #define SOUND A3
 #define LIGHT A6
-
+#define NATURAL_TURN 0
 
 // Motor setups
 MeDCMotor motorL(M1);
@@ -88,15 +88,15 @@ int win_play() {
 }
 
 
-void left() {
+void left(int amount) {
   motorL.run(130);
   motorR.run(130);
-  delay(540);
+  delay(amount);
 }
-void right() {
+void right(int amount) {
   motorL.run(-130);
   motorR.run(-130);
-  delay(540);
+  delay(amount);
 }
 
 void go(int seconds) {
@@ -112,7 +112,6 @@ void reverse() {
 void wait() {
   motorL.stop();
   motorR.stop();
-  //delay (1000);
 }
 
 
@@ -140,8 +139,8 @@ int soundChallenge() {
   v = average/10;
   //Serial.println(v);
   if(v >= 0.0 && v < 1.0) return 0;
-  else if(v >= 1.0 && v < 2.3) { right(); }
-  else if(v >= 2.3 && v < 5.0) { left(); }
+  else if(v >= 1.0 && v < 2.3) { right(540); }
+  else if(v >= 2.3 && v < 5.0) { left(540); }
   return 1;
 }
 
@@ -150,8 +149,8 @@ int lightChallenge() {
   Serial.print("Light sensor voltage reading: ");
   Serial.println(v);
   if(v >= 0.0 && v < 1.3) return 0;
-  else if(v >= 1.3 && v < 2.6) { right(); }
-  else if(v >= 2.6 && v < 3.9) { left(); }
+  else if(v >= 1.3 && v < 2.6) { right(540); }
+  else if(v >= 2.6 && v < 3.9) { left(540); }
   //else if(v >= 3.9 && v < 5.0) { }
   return 1;
 }
@@ -199,15 +198,6 @@ void loop() {
     inputR = analogRead (IR_SIDE_R) ;
 
     int f = blackLine();
-    /**
-    double average = 0, v;
-    for (int i = 0; i < 10; i++) {
-      average += (double)analogRead(SOUND) / 1023.0 * 5.0;
-    }
-  
-    v = average/10;
-    Serial.println(v);
-    */
     
     double gap_l = abs(setpointL-inputL); //distance away from setpoint
     if(gap_l<10)
@@ -246,24 +236,29 @@ void loop() {
       myPID_R.Compute();
       motorL.run(-(140 + outputL/2));
       motorR.run(140 + outputR/2);
-      /**
-      // FOR NATURAL TURNS!!!!! 
-      int d = echolocation();
-      if (d < 11) {
-        count++;
-      }else {
-        count = 0;
-      }
-      double adjusted_L = inputL - setpointL; 
-      double adjusted_R = inputR - setpointR;
-      if (count > 50) {
-        // Turn right 
-        Serial.print (100); 
-        //Serial.print (adjusted_L - adjusted_R); // Used to determine natural turns 
-      }else {
-        Serial.print (0);
-      }
-      Serial.println ("");
-      */
-     }    
+      
+        switch (NATURAL_TURN) {
+          case 1: 
+            int d = echolocation();
+            if (d < 4) {
+              count++;
+            }else {
+              count = 0;
+            }
+            double adjusted_L = inputL - setpointL; 
+            double adjusted_R = inputR - setpointR;
+            if (count > 20) {
+              wait();
+              delay(500);
+              if (adjusted_L - adjusted_R > 50) {
+                left(480);
+                count = 0;
+              }else {
+                right(480);
+                count = 0;
+              } 
+            }
+            break;
+        }
+    }    
 }
