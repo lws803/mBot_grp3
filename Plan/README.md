@@ -10,12 +10,12 @@ By the way, the project evaluation is only one week after the project studio(gg=
 # Report Guidelines
 
 • The project report is for documentation of your project work. Include the following details in your report:
-  o Cover page with your Group and team number along with the members’ names.
-  o Implementation details of the various subsystems – Proximity sensor, audio processing circuit, light sensing, navigation, etc.
-  o Steps taken for callibration and solving the sound and light challenges.
-  o Overall algorithm to solve the maze. You may include pseudocode/flowcharts or other pictorial aids to assist in your explanation.
-  o Details about work division within your team – How did you divide work among the group members?
-  o Any significant difficulties and the steps taken to overcome them.
+  (1) Cover page with your Group and team number along with the members’ names.
+  (2) Implementation details of the various subsystems – Proximity sensor, audio processing circuit, light sensing, navigation, etc.
+  (3) Steps taken for callibration and solving the sound and light challenges.
+  (4) Overall algorithm to solve the maze. You may include pseudocode/flowcharts or other pictorial aids to assist in your explanation.
+  (5) Details about work division within your team – How did you divide work among the group members?
+  (6) Any significant difficulties and the steps taken to overcome them.
 
 • Zip your program source codes and written report(in pdf format) into a single file, and name it according to your Group and Team number, e.g., Group1_Team1.zip (you can find your group and team number from IVLE).
 
