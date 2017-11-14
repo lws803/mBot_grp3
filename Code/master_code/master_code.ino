@@ -122,8 +122,9 @@ int blackLine() {
 }
 
 int soundChallenge() {
-  // 
   double average = 0, v;
+  delay(200);
+  
   for (int i = 0; i < 10; i++) {
     average += (double)analogRead(SOUND) / 1023.0 * 5.0;
     delay(100);
@@ -200,7 +201,7 @@ void loop() {
 
     if (f) {
       wait();
-      if(!soundChallenge() && !lightChallenge()) {
+      if(!lightChallenge() && !soundChallenge()) {
         win = 1;
         win_play();
         motorL.run(0);
