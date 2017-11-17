@@ -38,7 +38,7 @@ int soundChallenge() {
   double average = 0, v;
   for (int i = 0; i < 10; i++) {
     average += (double)analogRead(SOUND) / 1023.0 * 5.0;
-    delay(100);
+    delay(50);
   }
   
   v = average/10;
